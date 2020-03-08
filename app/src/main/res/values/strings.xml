@@ -13,10 +13,15 @@
     <string name="login">Login</string>
     <string name="please_log_in">Please Log In</string>
     <string name="email">Email</string>
-    <string name="enter_password">Enter Password</string>
     <string name="aravind_medamoni">Aravind Medamoni</string>
     <string name="aravindmedamoni_gmail_com">aravindmedamoni@gmail.com</string>
     <string name="addingchannel">addingChannel</string>
-    <string name="sign_up">Sign Up</string>
     <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="user_name">User Name</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="change_background_color">change background color</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="useravathar">userAvathar</string>
+    <string name="tap_for_generate_user_avathar">Tap for generate user avathar</string>
 </resources>
