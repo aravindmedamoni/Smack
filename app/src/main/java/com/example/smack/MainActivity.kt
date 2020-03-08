@@ -1,5 +1,6 @@
 package com.example.smack
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onLoginButtonClicked(view:View){
-
+        startActivity(Intent(this,LoginActivity::class.java))
     }
 
     fun onAddChannelButtonClicked(view : View){
