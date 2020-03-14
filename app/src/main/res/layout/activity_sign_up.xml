@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpActivty">
+    tools:context=".controllers.SignUpActivty">
 
     <EditText
         android:id="@+id/userName"
@@ -38,7 +38,7 @@
         android:importantForAutofill="no" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/passwordText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -50,7 +50,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailText" />
+        app:layout_constraintTop_toBottomOf="@+id/emailText"
+        android:importantForAutofill="no" />
 
     <TextView
         android:id="@+id/textView"
@@ -65,14 +66,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordText" />
 
     <ImageView
-        android:id="@+id/userAvathar"
+        android:id="@+id/userAvatarProfile"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="16dp"
-        android:onClick="generateUserAvathar"
+        android:onClick="generateUserAvatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -96,7 +97,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userAvathar" />
+        app:layout_constraintTop_toBottomOf="@+id/userAvatarProfile" />
 
     <Button
         android:id="@+id/signUpButton"

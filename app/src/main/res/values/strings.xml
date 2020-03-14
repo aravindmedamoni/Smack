@@ -23,5 +23,5 @@
     <string name="change_background_color">change background color</string>
     <string name="sign_up">Sign Up</string>
     <string name="useravathar">userAvathar</string>
-    <string name="tap_for_generate_user_avathar">Tap for generate user avathar</string>
+    <string name="tap_for_generate_user_avathar">Tap image for generate user avathar</string>
 </resources>
