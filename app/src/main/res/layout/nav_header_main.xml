@@ -11,19 +11,19 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/navHeaderProfile"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginStart="6dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        app:layout_constraintBottom_toTopOf="@+id/Login"
+        app:layout_constraintBottom_toTopOf="@+id/navHeaderLoginButton"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/profiledefault" />
 
     <TextView
-        android:id="@+id/profileName"
+        android:id="@+id/navHeaderProfilerName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -32,12 +32,12 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/navHeaderProfile"
+        app:layout_constraintTop_toTopOf="@+id/navHeaderProfile"
         tools:text="Aravind Medamoni" />
 
     <TextView
-        android:id="@+id/profilerMail"
+        android:id="@+id/navHeaderprofilerMail"
         android:layout_width="194dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -47,12 +47,12 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/profileName"
+        app:layout_constraintStart_toEndOf="@+id/navHeaderProfile"
+        app:layout_constraintTop_toBottomOf="@+id/navHeaderProfilerName"
         tools:text="aravindmedamoni@gmail.com" />
 
     <Button
-        android:id="@+id/Login"
+        android:id="@+id/navHeaderLoginButton"
         android:layout_width="wrap_content"
         android:layout_height="34dp"
         android:layout_marginStart="2dp"

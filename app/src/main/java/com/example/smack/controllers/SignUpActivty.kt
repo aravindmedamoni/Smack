@@ -20,6 +20,7 @@ class SignUpActivty : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
+        progressBar.visibility = View.INVISIBLE
     }
 
     fun onSignUpButtonClicked(view: View) {
@@ -28,7 +29,7 @@ class SignUpActivty : AppCompatActivity() {
         val email = emailText.text.toString()
         val password = passwordText.text.toString()
 
-        if(name.isNotEmpty() && email.isNullOrEmpty() && password.isNotEmpty()){
+        if(name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()){
             AuthService.registerUser(this,email,password) {
                     registerSuccess ->
                 if(registerSuccess){
@@ -40,7 +41,7 @@ class SignUpActivty : AppCompatActivity() {
                                 if(createSuccess){
                                     val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
                                      LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
-                                    enableSpinner(false)
+                                     enableSpinner(false)
                                     //if the user created we need to setback all our fields to default
                                     userName.text.clear();
                                     emailText.text.clear()
@@ -55,22 +56,20 @@ class SignUpActivty : AppCompatActivity() {
                                     finish()
                                 }else{
                                     errorToast()
-                                    enableSpinner(false)
                                 }
                             }
                         }else{
                             errorToast()
-                            enableSpinner(false)
                         }
                     }
                 }else{
                     errorToast()
-                    enableSpinner(false)
                 }
             }
         }else {
             Toast.makeText(this,"Please Enter all the details.",Toast.LENGTH_LONG).show()
             enableSpinner(false)
+
         }
 
     }
@@ -82,9 +81,9 @@ class SignUpActivty : AppCompatActivity() {
 
     private fun enableSpinner(isEnable : Boolean){
         if(isEnable){
-            progressBar.visibility = View.INVISIBLE
-        }else{
             progressBar.visibility = View.VISIBLE
+        }else{
+            progressBar.visibility = View.INVISIBLE
         }
         userAvatarProfile.isEnabled = !isEnable
         signUpButton.isEnabled = !isEnable
