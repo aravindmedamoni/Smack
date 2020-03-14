@@ -1,12 +1,16 @@
 package com.example.smack.controllers
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.smack.R
 import com.example.smack.services.AuthService
 import com.example.smack.services.UserDataService
+import com.example.smack.utils.BROADCAST_USER_DATA_CHANGE
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.util.*
 
@@ -19,30 +23,74 @@ class SignUpActivty : AppCompatActivity() {
     }
 
     fun onSignUpButtonClicked(view: View) {
-        val userName = userName.text.toString()
+        enableSpinner(true)
+        val name = userName.text.toString()
         val email = emailText.text.toString()
         val password = passwordText.text.toString()
-        AuthService.registerUser(this,email,password) {
-            registerSuccess ->
-            if(registerSuccess){
-                AuthService.loginUser(this,email,password){
-                    loginSuccess ->
-                    if(loginSuccess){
-                        AuthService.createUser(this,email,userName,userAvatar,avatarColor){
-                            createSuccess ->
-                            if(createSuccess){
-                                println(UserDataService.name)
-                                println(UserDataService.email)
-                                println(UserDataService.avatarName)
-                                println(UserDataService.avatarColor)
-                                finish()
+
+        if(name.isNotEmpty() && email.isNullOrEmpty() && password.isNotEmpty()){
+            AuthService.registerUser(this,email,password) {
+                    registerSuccess ->
+                if(registerSuccess){
+                    AuthService.loginUser(this,email,password){
+                            loginSuccess ->
+                        if(loginSuccess){
+                            AuthService.createUser(this,email,name,userAvatar,avatarColor){
+                                    createSuccess ->
+                                if(createSuccess){
+                                    val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
+                                     LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
+                                    enableSpinner(false)
+                                    //if the user created we need to setback all our fields to default
+                                    userName.text.clear();
+                                    emailText.text.clear()
+                                    passwordText.text.clear()
+                                    userAvatar = "profileDefault"
+                                    avatarColor = "[0.5,0.5,0.5,1]"
+
+//                                println(UserDataService.name)
+//                                println(UserDataService.email)
+//                                println(UserDataService.avatarName)
+//                                println(UserDataService.avatarColor)
+                                    finish()
+                                }else{
+                                    errorToast()
+                                    enableSpinner(false)
+                                }
                             }
+                        }else{
+                            errorToast()
+                            enableSpinner(false)
                         }
                     }
+                }else{
+                    errorToast()
+                    enableSpinner(false)
                 }
             }
+        }else {
+            Toast.makeText(this,"Please Enter all the details.",Toast.LENGTH_LONG).show()
+            enableSpinner(false)
         }
+
     }
+
+    private fun errorToast(){
+        Toast.makeText(this,"Something went wrong, please try again later",Toast.LENGTH_LONG).show()
+        enableSpinner(false)
+    }
+
+    private fun enableSpinner(isEnable : Boolean){
+        if(isEnable){
+            progressBar.visibility = View.INVISIBLE
+        }else{
+            progressBar.visibility = View.VISIBLE
+        }
+        userAvatarProfile.isEnabled = !isEnable
+        signUpButton.isEnabled = !isEnable
+        changeBGColorButton.isEnabled = !isEnable
+    }
+
     fun generateUserAvatar(view: View) {
         val color = Random().nextInt(2)
         val avatar = Random().nextInt(28)
