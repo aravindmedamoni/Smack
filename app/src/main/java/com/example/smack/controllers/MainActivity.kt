@@ -18,6 +18,8 @@ import com.example.smack.R
 import com.example.smack.services.AuthService
 import com.example.smack.services.UserDataService
 import com.example.smack.utils.BROADCAST_USER_DATA_CHANGE
+import com.example.smack.utils.SOCKET_URL
+import io.socket.client.IO
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.add_channel_dialog.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -26,15 +28,27 @@ import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    val socket = IO.socket(SOCKET_URL)
+
     private lateinit var appBarConfiguration: AppBarConfiguration
+
+    override fun onResume() {
+        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangedReceiver, IntentFilter(
+            BROADCAST_USER_DATA_CHANGE))
+        socket.connect()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(userDataChangedReceiver)
+        super.onPause()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
      //   val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        //hide keyboard
-        hideKeyBoard()
 
         val toggle = ActionBarDrawerToggle(
             this,drawer_layout,toolbar,
@@ -46,8 +60,6 @@ class MainActivity : AppCompatActivity() {
 
         navHeaderSetToDefault()
 
-        LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangedReceiver, IntentFilter(
-            BROADCAST_USER_DATA_CHANGE))
     }
 
     private val userDataChangedReceiver = object : BroadcastReceiver(){
@@ -91,12 +103,12 @@ class MainActivity : AppCompatActivity() {
                     val channelDescription = channelDescEditText.text.toString()
 
                     //create channel with name and description
-                    hideKeyBoard()
+                    socket.emit("new Channel", channelName,channelDescription)
+
                 }
                 .setNegativeButton("Cancel"){
                     dialogInterface ,i ->
                     //add logic for cancel and close the window
-                    hideKeyBoard()
                 }
                 .show()
         }
@@ -118,5 +130,10 @@ class MainActivity : AppCompatActivity() {
         navHeaderprofilerMail.text = ""
         navHeaderProfile.setImageResource(R.drawable.profiledefault)
         navHeaderProfile.setBackgroundColor(Color.TRANSPARENT)
+    }
+
+    override fun onDestroy() {
+        socket.disconnect()
+        super.onDestroy()
     }
 }
