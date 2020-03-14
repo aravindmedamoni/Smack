@@ -24,4 +24,5 @@
     <string name="sign_up">Sign Up</string>
     <string name="useravathar">userAvathar</string>
     <string name="tap_for_generate_user_avathar">Tap image for generate user avathar</string>
+    <string name="create_channel">Create Channel</string>
 </resources>
