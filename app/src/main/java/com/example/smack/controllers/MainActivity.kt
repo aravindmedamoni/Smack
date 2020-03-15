@@ -28,16 +28,19 @@ import io.socket.client.IO
 import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    val socket = IO.socket(SOCKET_URL)
+    var selectedChannel : Channel? =null
+
+    private val socket = IO.socket(SOCKET_URL)
     lateinit var channelAdapter : ArrayAdapter<Channel>
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    fun setUpAdapter(){
+    private fun setUpAdapter(){
         channelAdapter = ArrayAdapter(this,android.R.layout.simple_list_item_1,MessageService.channels)
         channel_list.adapter = channelAdapter
     }
@@ -55,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
        //write a logic for connecting to the socket
         socket.connect()
-        socket.on("New Channel",onNewChannel);
+        socket.on("New Channel",onNewChannel)
         val toggle = ActionBarDrawerToggle(
             this,drawer_layout,toolbar,
             R.string.navigation_drawer_open,
@@ -69,6 +72,17 @@ class MainActivity : AppCompatActivity() {
         //here is setting the channel list adapter
         setUpAdapter()
 
+        //checking for user already loggedIn or not
+        if(App.prefs.isLoggedIn){
+            AuthService.getUserByMail(this){}
+        }
+
+        //Logic for selecting the specific channel from the navigation drawer
+        channel_list.setOnItemClickListener { _, _, position, id ->
+            selectedChannel = MessageService.channels[position]
+            drawer_layout.closeDrawer(GravityCompat.START)
+            updateWithChannelName()
+        }
     }
 
     private val onNewChannel = Emitter.Listener{
@@ -77,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         val channelDescription = args[1] as String
         val channelId = args[2] as String
 
-        val newChannel = com.example.smack.models.Channel(channelName,channelDescription, channelId)
+        val newChannel = Channel(channelName,channelDescription, channelId)
             MessageService.channels.add(newChannel)
             channelAdapter.notifyDataSetChanged()
 //            println(newChannel.channelName)
@@ -89,22 +103,31 @@ class MainActivity : AppCompatActivity() {
 
     private val userDataChangedReceiver = object : BroadcastReceiver(){
         override fun onReceive(context: Context, intent: Intent?) {
-            if(AuthService.isLogedIn){
+            if(App.prefs.isLoggedIn){
                 navHeaderProfilerName.text = UserDataService.name
                 navHeaderprofilerMail.text = UserDataService.email
                 navHeaderLoginButton.text = "Logout"
                 val resourceId = resources.getIdentifier(UserDataService.avatarName,"drawable",packageName)
                 navHeaderProfile.setImageResource(resourceId)
                // navHeaderProfile.setBackgroundColor(UserDataService.returnAvatarColor(UserDataService.avatarColor))
-                MessageService.getChannels(context){
+                MessageService.getChannels(){
                     complete ->
                     if(complete){
-                        channelAdapter.notifyDataSetChanged()
+                        if(MessageService.channels.count() > 0){
+                            selectedChannel = MessageService.channels[0]
+                            channelAdapter.notifyDataSetChanged()
+                            updateWithChannelName()
+                        }
+
                     }
                 }
             }
         }
 
+    }
+
+    fun updateWithChannelName(){
+        channelName.text = "#${selectedChannel?.channelName}"
     }
 
     override fun onBackPressed(){
@@ -114,7 +137,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onLoginButtonClicked(view:View){
-        if(AuthService.isLogedIn){
+        if(App.prefs.isLoggedIn){
             UserDataService.logout()
             navHeaderSetToDefault()
         }else{
@@ -124,7 +147,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onAddChannelButtonClicked(view : View){
-        if(AuthService.isLogedIn){
+        if(App.prefs.isLoggedIn){
             val builder = AlertDialog.Builder(this)
             val dialogView = layoutInflater.inflate(R.layout.add_channel_dialog,null)
             builder.setView(dialogView)

@@ -28,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
         val email = emailText.text.toString()
         val password = passwordText.text.toString()
         if(email.isNotEmpty() && password.isNotEmpty()){
-            AuthService.loginUser(this,email,password){
+            AuthService.loginUser(email,password){
                     loginSuccess ->
                 if(loginSuccess){
                     AuthService.getUserByMail(this){

@@ -10,8 +10,9 @@
         android:restoreAnyVersion="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".controllers.SignUpActivty"></activity>
+        android:theme="@style/AppTheme"
+        android:name=".controllers.App">
+        <activity android:name=".controllers.SignUpActivty"/>
         <activity android:name=".controllers.LoginActivity" />
         <activity
             android:name=".controllers.MainActivity"
