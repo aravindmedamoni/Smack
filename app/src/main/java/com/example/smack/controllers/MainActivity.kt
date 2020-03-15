@@ -17,7 +17,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smack.R
+import com.example.smack.adapters.MessageAdapter
 import com.example.smack.models.Channel
 import com.example.smack.models.Message
 import com.example.smack.services.AuthService
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private val socket = IO.socket(SOCKET_URL)
     lateinit var channelAdapter: ArrayAdapter<Channel>
+    lateinit var messageAdapter:MessageAdapter
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -45,15 +48,11 @@ class MainActivity : AppCompatActivity() {
         channelAdapter =
             ArrayAdapter(this, android.R.layout.simple_list_item_1, MessageService.channels)
         channel_list.adapter = channelAdapter
-    }
 
-    override fun onResume() {
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-            userDataChangedReceiver, IntentFilter(
-                BROADCAST_USER_DATA_CHANGE
-            )
-        )
-        super.onResume()
+        messageAdapter = MessageAdapter(this,MessageService.messages)
+        messageList.adapter = messageAdapter
+        val linearLayout = LinearLayoutManager(this)
+        messageList.layoutManager = linearLayout
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +79,11 @@ class MainActivity : AppCompatActivity() {
 
         //here is setting the channel list adapter
         setUpAdapter()
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            userDataChangedReceiver, IntentFilter(
+                BROADCAST_USER_DATA_CHANGE
+            )
+        )
 
         //checking for user already loggedIn or not
         if (App.prefs.isLoggedIn) {
@@ -127,6 +131,8 @@ class MainActivity : AppCompatActivity() {
 
                     val newMessage = Message(message,userName,channelId,avatarName,avatarColor,id,timeStamp)
                     MessageService.messages.add(newMessage)
+                    messageAdapter.notifyDataSetChanged()
+                    messageList.smoothScrollToPosition(messageAdapter.itemCount-1)
                   //  println(newMessage.message)
                 }
 
@@ -166,7 +172,10 @@ class MainActivity : AppCompatActivity() {
         MessageService.getMessages(selectedChannel!!.channelId){
             complete ->
             if(complete){
-                //println()
+              messageAdapter.notifyDataSetChanged()
+                if(messageAdapter.itemCount > 0){
+                    messageList.smoothScrollToPosition(messageAdapter.itemCount -1)
+                }
             }
         }
     }
@@ -237,9 +246,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun navHeaderSetToDefault() {
+        channelAdapter.notifyDataSetChanged()
+        messageAdapter.notifyDataSetChanged()
         navHeaderLoginButton.text = "Login"
         navHeaderProfilerName.text = "Please Login"
         navHeaderprofilerMail.text = ""
+        channelName.text = "Please Login"
         navHeaderProfile.setImageResource(R.drawable.profiledefault)
         navHeaderProfile.setBackgroundColor(Color.TRANSPARENT)
     }
